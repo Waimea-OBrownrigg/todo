@@ -24,9 +24,15 @@ register_error_handlers(app)
 # Home page route
 #-----------------------------------------------------------
 @app.get("/")
-def index():
-    return render_template("pages/home.jinja")
+def show_all_things():
+    with connect_db() as client:
+        # Get all the things from the DB
+        sql = "SELECT id, name FROM todo ORDER BY name ASC"
+        result = client.execute(sql)
+        things = result.rows
 
+        # And show them on the page
+        return render_template("pages/things.jinja", things=things)
 
 #-----------------------------------------------------------
 # About page route
@@ -43,7 +49,7 @@ def about():
 def show_all_things():
     with connect_db() as client:
         # Get all the things from the DB
-        sql = "SELECT id, name FROM things ORDER BY name ASC"
+        sql = "SELECT id, name FROM todo ORDER BY name ASC"
         result = client.execute(sql)
         things = result.rows
 
