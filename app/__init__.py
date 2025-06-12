@@ -24,15 +24,16 @@ register_error_handlers(app)
 # Home page route
 #-----------------------------------------------------------
 @app.get("/")
-def show_all_things():
+def placeholder_name():
     with connect_db() as client:
         # Get all the things from the DB
-        sql = "SELECT id, name FROM todo ORDER BY name ASC"
+        sql = "SELECT * FROM tasks ORDER BY priority DESC"
         result = client.execute(sql)
-        things = result.rows
+        tasks = result.rows
+        print (tasks)
 
         # And show them on the page
-        return render_template("pages/things.jinja", things=things)
+        return render_template("pages/home.jinja", tasks=tasks)
 
 #-----------------------------------------------------------
 # About page route

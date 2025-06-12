@@ -17,11 +17,11 @@
 
 {% block content %}
 
-    <section id="things">
+    <section id="tasks">
 
-        {% for thing in things %}
+        {% for task in tasks %}
         
-            <article><a href="/thing/{{thing.id}}">{{thing.name}}</a></article>
+            <article> {{ task.priority }} {{ task.name }} {{ task.completion }} </article>
             
         {% endfor %}
 
