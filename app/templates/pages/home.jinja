@@ -10,7 +10,7 @@
 
 {% block title %}
 
-    Flask Demo
+    To do list
 
 {% endblock %}
 
@@ -18,16 +18,31 @@
 {% block content %}
 
     <section id="tasks">
-
+        <table>
+        <thead>
+            <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Completion</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for task in tasks %}
-        
-            <article> {{ task.priority }} {{ task.name }} {{ task.completion }} </article>
-            
+            <tr>
+                <th scope="row">{{task.name}}</th>
+                <td>{{task.priority}}</td>
+                <td>
+                {% if task.completion == 1 %} 
+                    <p>Complete</p>
+                {% elif task.completion == 0 %} 
+                    <p>Incomplete</p>
+                {% endif %}
+                </td>
+            </tr>
         {% endfor %}
-
+        </tbody>
+        </table>
     </section>
-
-    <a href="/things" role="button">Go to the Things...</a>
 
 {% endblock %}
 
