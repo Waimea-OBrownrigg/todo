@@ -18,12 +18,14 @@
 {% block content %}
 
     <section id="tasks">
+    <article>
         <table>
         <thead>
             <tr>
-            <th scope="col">Name</th>
+            <th scope="col">Task</th>
             <th scope="col">Priority</th>
             <th scope="col">Completion</th>
+            <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -32,16 +34,36 @@
                 <th scope="row">{{task.name}}</th>
                 <td>{{task.priority}}</td>
                 <td>
-                {% if task.completion == 1 %} 
-                    <p>Complete</p>
-                {% elif task.completion == 0 %} 
-                    <p>Incomplete</p>
-                {% endif %}
+                    <form action="/complete-task" method="POST">
+                        <input type="hidden" name="id" value="{{ task.id }}">
+                        {% if task.completion == 1 %} 
+                            <input type="checkbox" name="completion" checked onchange="this.form.submit()"/>
+                        {% elif task.completion == 0 %} 
+                            <input type="checkbox" name="completion" onchange="this.form.submit()"/>
+                        {% endif %}
+                    </form>
                 </td>
+                <td><a role="button" onclick="return confirm('Are you sure?')" href="/delete/{{task.id}}">Delete</a></td>
             </tr>
         {% endfor %}
         </tbody>
         </table>
+    </article>
+    <article>
+
+        <form action="/add-task" method="POST">
+            <label>
+                Name
+                <input name="name" type="text" required>
+            </label>
+            <label>
+                priority
+                <input name="priority" placeholder="1-5" type="number" min="1" max="5" required>
+            </label>
+            <button>Add task</button>
+        </form>
+
+    </article>
     </section>
 
 {% endblock %}

@@ -34,6 +34,52 @@ def placeholder_name():
 
         # And show them on the page
         return render_template("pages/home.jinja", tasks=tasks)
+    
+#-----------------------------------------------------------
+# Changing the completion
+#-----------------------------------------------------------
+@app.post("/complete-task")
+def complete_task():
+    # If form checked then completed
+    completed  = 1 if request.form.get("completion") else 0
+    # Get hidden id from form
+    id = request.form.get("id")
+
+    with connect_db() as client:
+        sql = "UPDATE tasks SET completion = ? WHERE id=?;"
+        values = [completed, id]
+        client.execute(sql, values)
+
+    return redirect("/")
+
+#-----------------------------------------------------------
+# Route for deleting a thing, Id given in the route
+#-----------------------------------------------------------
+@app.get("/delete/<int:id>")
+def delete_a_thing(id):
+    with connect_db() as client:
+        # Delete the thing from the DB
+        sql = "DELETE FROM tasks WHERE id=?"
+        values = [id]
+        client.execute(sql, values)
+        return redirect("/")
+
+#-----------------------------------------------------------
+# Add a new task
+#-----------------------------------------------------------
+@app.post("/add-task")
+def add_task():
+    with connect_db() as client:
+        name = request.form.get("name")
+        priority = request.form.get("priority")
+        sql = """
+            INSERT INTO tasks (name, priority)
+            VALUES (?,?)
+        """
+        values = [name, priority]
+        client.execute(sql, values)
+        return redirect("/")
+
 
 #-----------------------------------------------------------
 # About page route
@@ -101,22 +147,6 @@ def add_a_thing():
 
         # Go back to the home page
         flash(f"Thing '{name}' added", "success")
-        return redirect("/things")
-
-
-#-----------------------------------------------------------
-# Route for deleting a thing, Id given in the route
-#-----------------------------------------------------------
-@app.get("/delete/<int:id>")
-def delete_a_thing(id):
-    with connect_db() as client:
-        # Delete the thing from the DB
-        sql = "DELETE FROM things WHERE id=?"
-        values = [id]
-        client.execute(sql, values)
-
-        # Go back to the home page
-        flash("Thing deleted", "warning")
         return redirect("/things")
 
 
